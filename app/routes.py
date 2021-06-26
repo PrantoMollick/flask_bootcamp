@@ -91,11 +91,12 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
+    email_hash = user.avatar()
     posts = [
         {'author' : user, 'body' : 'TEST post #1'}, 
         {'author' : user, 'body' : 'TEST POST #2'}
     ]
 
-    return render_template('user.html', user=user, posts = posts)
+    return render_template('user.html', user=user, posts = posts, email_hash = email_hash), 200
 
 

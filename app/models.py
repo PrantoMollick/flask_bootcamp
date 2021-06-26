@@ -4,6 +4,7 @@ from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, login
 from flask_login import UserMixin
+import hashlib
 
 @login.user_loader
 def load_user(id):
@@ -26,6 +27,10 @@ class User(UserMixin, db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def avatar(self):
+        digest = hashlib.md5(self.email.lower().encode('utf-8')).hexdigest()
+        return digest
 
 
 class Post(db.Model):
