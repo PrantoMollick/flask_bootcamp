@@ -5,16 +5,13 @@
     <tr valign="top">
     <td><img src="{{ avatars.gravatar(email_hash) }}"></td>
     <td><h1>User: {{ user.username }}</h1></td>
+    {% if user.about_me %} <p>{{ user.about_me }}</p> {% endif %}
+    {% if user.last_seen %} <p>Last seen on {{ user.last_seen }}</p> {% endif %}
     </tr>
     </table>
     <hr>
     {% for post in posts %}
-    <table>
-        <tr valign="top">
-        <td><img src="{{ avatars.gravatar(email_hash, size='50') }}"></td>
-        <td>{{ post.author.username }} says:<br>{{ post.body }}</td>
-        </tr>
-    </table>
+        {% include '_post.html' %}
     {% endfor %}
 
 {% endblock %}

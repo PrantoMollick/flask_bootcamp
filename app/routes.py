@@ -4,6 +4,17 @@ from app import app, db
 from flask_login import current_user, login_user, logout_user, login_required, AnonymousUserMixin
 from app.models import User
 from werkzeug.urls import url_parse
+from datetime import datetime
+import pytz
+
+UTC = pytz.utc
+IST = pytz.timezone('Asia/Dhaka')
+  
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.now(IST)
+        db.session.commit()
 
 
 @app.route('/')
