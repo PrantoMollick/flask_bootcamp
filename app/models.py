@@ -13,6 +13,10 @@ IST = pytz.timezone('Asia/Dhaka')
 def load_user(id):
     return User.query.get(int(id))
 
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+)
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -23,6 +27,11 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.now(IST))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    followed = db.relationship('User', secondary=followers,
+            primaryjoin=(followers.c.follower_id==id),
+            secondaryjoin=(followers.c.followed_id==id),
+            backref=db.backref('follwers', lazy='dynamic'), lazy='dynamic'
+            )
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -36,6 +45,7 @@ class User(UserMixin, db.Model):
     def avatar(self):
         digest = hashlib.md5(self.email.lower().encode('utf-8')).hexdigest()
         return digest
+
 
 
 class Post(db.Model):
